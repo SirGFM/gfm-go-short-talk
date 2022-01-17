@@ -31,3 +31,103 @@
     \end{itemize}
 
 \end{frame}
+
+%%================================================================================
+%%
+\subsection{Types in Go}
+%%
+%%================================================================================
+
+% https://go.dev/ref/spec#Properties_of_types_and_values
+\begin{frame}[fragile]
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    \begin{itemize}
+        \item Renamed types are different types
+    \end{itemize}
+
+    % using a slice makes this trickier... which is better, I guess...
+    \small \begin{lstlisting}[language=c]
+type str_arr1 []string
+type str_arr2 []string
+
+func do_stuff(arr *str_arr1) { /* ... */ }
+
+// This would give a compiler error
+a2 := str_arr2{"a", "b"}
+
+do_stuff(&a2)
+    \end{lstlisting} \normalsize
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    \begin{itemize}
+        \item Conversion may happen if the underlying type is the same
+    \end{itemize}
+
+    \small \begin{lstlisting}[language=c]
+type ( str_arr1 []string; str_arr2 []string)
+
+func do_stuff(arr str_arr1) { /* ... */ }
+
+a2 := str_arr2{"a", "b"}
+
+// This is OK
+a1 := str_arr1(a2)
+do_stuff(&a1)
+
+// The cast is OK, the call is NOT!
+s := []string(a2)
+do_stuff(&s)
+    \end{lstlisting} \normalsize
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    \begin{itemize}
+        \item Types may have functions defined for them
+    \end{itemize}
+
+
+    \small \begin{lstlisting}[language=c]
+import "math"
+
+type point struct {x float64; y float64}
+
+func (self *point) add(other point) {
+    self.x += other.x
+    self.y += other.y
+}
+
+func (a point) distance(b point) float64 {
+    dx := a.x - b.x
+    dy := a.y - b.y
+    return math.Sqrt(dx*dx + dy*dy)
+}
+    \end{lstlisting} \normalsize
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    \begin{itemize}
+        \item Capitalization defines scope
+    \end{itemize}
+
+
+    \small \begin{lstlisting}[language=c]
+package some_package
+
+func SomePublicFunction() { /* ... */ }
+
+func somePrivateFunction() { /* ... */ }
+
+type some_struct struct {
+    PublicField int
+    privateField int
+}
+    \end{lstlisting} \normalsize
+\end{frame}
