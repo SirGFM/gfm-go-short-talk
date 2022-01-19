@@ -34,6 +34,63 @@
 
 %%================================================================================
 %%
+\subsection{Containers in Go}
+%%
+%%================================================================================
+
+\begin{frame}[fragile]
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    \begin{itemize}
+        \item The size of an array is part of its type
+        \begin{itemize}
+            \item Checked when passed to functions
+        \end{itemize}
+        \item \texttt{Slice}: Reference to a part of an array
+        \begin{itemize}
+            \item Has a maximum size (its capacity)
+            \item Tracks the current length (number of used slots)
+            \item May be further subdivided
+        \end{itemize}
+        \item Access is always checked!
+    \end{itemize}
+
+    \small \begin{lstlisting}[language=c]
+var buf [1024]byte
+left := buf[:512]
+right := buf[512:]
+empty_slice := make([]int, 0 100)
+    \end{lstlisting} \normalsize
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    \begin{itemize}
+        \item \texttt{map}: built-in hash map
+        \begin{itemize}
+            \item Access must be manually synchronized!
+        \end{itemize}
+        \item \texttt{range} allows iterating over containers (and channels!!)
+    \end{itemize}
+
+    \small \begin{lstlisting}[language=c]
+var buf [1024]byte
+for idx := range buf { /* ... */ }
+
+for idx, value := range buf { /* ... */ }
+
+m := make(map[string]int)
+for key, value := range m {
+    if key == "<delete_me>" {
+        delete(m, key)
+    }
+}
+    \end{lstlisting} \normalsize
+\end{frame}
+
+%%================================================================================
+%%
 \subsection{Types in Go}
 %%
 %%================================================================================
@@ -175,6 +232,143 @@ func (a Num) Compare(other interface{}) int {
         return -1
     }
     return 0
+}
+    \end{lstlisting} \normalsize
+\end{frame}
+
+%%================================================================================
+%%
+\subsection{Error handling in Go}
+%%
+%%================================================================================
+
+\begin{frame}
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    \begin{itemize}
+        \item Functions may return multiple values (similar to Tuples)
+        \item Functions usually return something(s) and an \texttt{error}
+        \begin{itemize}
+            \item \texttt{nil} indicates success
+            \item Otherwise, a value that implements \texttt{Error() string}
+        \end{itemize}
+        \item \texttt{panic} for fatal errors
+        \begin{itemize}
+            \item Recoverable, but similar to signals (even segfault)
+            \item Sometimes (http package) handled and ignored
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    \begin{itemize}
+        \item How to handle errors?
+        \begin{itemize}
+            \item \texttt{goto}?
+            \item Stack unwinding?
+            \item Long and messy conditionals?
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    \begin{itemize}
+        \item \texttt{defer}
+        \item Stack of function called when the current function returns
+        \item Called even on \texttt{panic}
+    \end{itemize}
+
+    \small \begin{lstlisting}[language=c]
+f, err := os.Open("some-file")
+if err != nil {
+    // handle it
+}
+defer f.Close()
+    \end{lstlisting} \normalsize
+\end{frame}
+
+%%================================================================================
+%%
+\subsection{Concurrency in Go}
+%%
+%%================================================================================
+
+\begin{frame}
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    \begin{itemize}
+        \item \texttt{Goroutines}: "lightweight" threads
+        \item \texttt{channels}: communication primitive
+        \begin{itemize}
+            \item Queue/Dequeue items without explicit synchronization
+            \item Buffered (queueing blocks until the channel is available)
+            \item Unbuffered (gotta go fast)
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    \small \begin{lstlisting}[language=c]
+c := make(chan interface{}, 1)
+
+go func() {
+    for value := range c {
+        // do something with value
+    }
+} ()
+
+// Send values to the goroutine
+c <- 0
+c <- "aaaa"
+// Close the channel to stop the range
+close(c)
+    \end{lstlisting} \normalsize
+\end{frame}
+
+%%================================================================================
+%%
+\subsection{Standard library}
+%%
+%%================================================================================
+
+\begin{frame}
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    Great collection of packages in the standard library
+
+    \begin{itemize}
+        \item Cryptography
+        \item Encoding
+        \item Networking
+    \end{itemize}
+\end{frame}
+
+%%================================================================================
+%%
+\subsection{Memory management}
+%%
+%%================================================================================
+
+\begin{frame}[fragile]
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    \begin{itemize}
+        \item Go is garbage collect
+        \item Automatically allocates objects in the heap as needed
+        \item Accessing \texttt{nil} still panics
+    \end{itemize}
+
+    \small \begin{lstlisting}[language=c]
+func getPointer() *int {
+    var i int
+
+    return &i
 }
     \end{lstlisting} \normalsize
 \end{frame}
