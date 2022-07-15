@@ -1,4 +1,4 @@
-\section{What's GO?}
+\section{What's Go?}
 
 %%================================================================================
 %%
@@ -59,7 +59,7 @@
 var buf [1024]byte
 left := buf[:512]
 right := buf[512:]
-empty_slice := make([]int, 0 100)
+empty_slice := make([]int, 0, 100)
     \end{lstlisting} \normalsize
 \end{frame}
 
@@ -127,7 +127,7 @@ do_stuff(&a2)
     \small \begin{lstlisting}[language=c]
 type ( str_arr1 []string; str_arr2 []string)
 
-func do_stuff(arr str_arr1) { /* ... */ }
+func do_stuff(arr *str_arr1) { /* ... */ }
 
 a2 := str_arr2{"a", "b"}
 
@@ -359,7 +359,7 @@ close(c)
     \frametitle{\secname: \small\subsecname\normalsize}
 
     \begin{itemize}
-        \item Go is garbage collect
+        \item Go is garbage collected
         \item Automatically allocates objects in the heap as needed
         \item Accessing \texttt{nil} still panics
     \end{itemize}
