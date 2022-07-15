@@ -1,0 +1,79 @@
+\section{Go...tchas}
+
+%%================================================================================
+%%
+\subsection{nil interface vs nil value}
+%%
+%%================================================================================
+
+\begin{frame}
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    An interface is always nilable, but it may also contain a nilable type. \break
+
+    Example: https://go.dev/play/p/owF-aeX5G7C \break
+
+    Alternative: https://go.dev/play/p/awn8gHExXbq
+\end{frame}
+
+%%================================================================================
+%%
+\subsection{Defer without checking errors}
+%%
+%%================================================================================
+
+\begin{frame}
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    Although deferred simplifies releasing resources on error, it can lead to some tricky errors. \break
+
+    Example: https://go.dev/play/p/obWN8ih6fmL
+\end{frame}
+
+%%================================================================================
+%%
+\subsection{Shadowing}
+%%
+%%================================================================================
+
+\begin{frame}
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    cgo (Google's compiler) does not generate warnings for shadowed variables. \break
+
+    There's a tool to detect that. \break
+
+    Example: https://go.dev/play/p/h7r4n9PVQvz
+\end{frame}
+
+%%================================================================================
+%%
+\subsection{Wrapping nil errors}
+%%
+%%================================================================================
+
+\begin{frame}
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    Being able to wrap errors can be quite a powerful tool. \break
+
+    github.com/pkg/errors allows wrapping the error and its callstack. \break
+
+    However, if a function indicates an error on something other than an \texttt{error}, this can lead to issues... \break
+
+    Example: https://go.dev/play/p/61rfe7ojw8o
+\end{frame}
+
+%%================================================================================
+%%
+\subsection{Writing past a slice}
+%%
+%%================================================================================
+
+\begin{frame}
+    \frametitle{\secname: \small\subsecname\normalsize}
+
+    By writing to a slice that's a section of a larger slice/array, you may end-up overwriting the original container. \break
+
+    Example: https://go.dev/play/p/CG-fBKey0Yr
+\end{frame}
